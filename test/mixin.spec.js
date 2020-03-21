@@ -171,6 +171,15 @@ describe('mixin.js', () => {
     });
   });
 
+  it('should unwatch on destroyed', () => {
+    const unwatcher = jest.fn();
+
+    wrapper.vm.$set(wrapper.vm, '$hashUnwatchers', [unwatcher]);
+    wrapper.destroy();
+
+    expect(unwatcher).toHaveBeenCalled();
+  });
+
   it('should correctly bail callback from hash change', done => {
     const callback = jest.fn();
 

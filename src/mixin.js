@@ -98,7 +98,6 @@ export default {
     }
   },
 
-  /* istanbul ignore next */
   destroyed() {
     this.$hashUnwatchers.map(unwatcher => {
       unwatcher();
