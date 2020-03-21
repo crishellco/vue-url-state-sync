@@ -24,6 +24,6 @@ jobs:
     - run: yarn lint
     - run: yarn test
     - run: curl -X POST -d {} https://api.netlify.com/build_hooks/5e75d8d64fee5d79ce560f49
-      if: github.ref === 'master'
+      if: github.ref == 'master'
       env:
         CI: true
