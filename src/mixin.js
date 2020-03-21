@@ -15,7 +15,11 @@ export default {
     const replace = (hash = {}) => {
       const route = { hash: `${query.stringify(hash)}` };
 
-      this.$router.push(route).catch(() => {});
+      this.$router.push(
+        route,
+        () => {},
+        () => {}
+      );
     };
 
     const remove = key => {

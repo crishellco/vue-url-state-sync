@@ -4,8 +4,8 @@ module.exports = {
   mode: process.env.NODE_ENV,
   entry: ['./src/index.js'],
   output: {
-    library: 'VuePluginTemplate',
-    libraryTarget: 'commonjs',
+    library: 'VueHasher',
+    libraryTarget: 'umd',
     filename: 'index.js',
     globalObject: "typeof self !== 'undefined' ? self : this"
   },

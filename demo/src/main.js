@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import App from './App.vue';
-import VueHasher from '../../src';
+import VueHasher from '../../dist';
 import Demo from './Demo';
 
 Vue.config.productionTip = false;
