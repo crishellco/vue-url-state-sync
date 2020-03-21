@@ -1,12 +1,12 @@
-# Vue Skillet
+# Vue Hasher
 
-![Actions Status](https://github.com/crishellco/vue-skillet/workflows/Build/badge.svg) ![Actions Status](https://github.com/crishellco/vue-skillet/workflows/Deploy/badge.svg) ![](badges/badge-branches.svg) ![](badges/badge-functionss.svg) ![](badges/badge-lines.svg) ![](badges/badge-statements.svg) [![Maintainability](https://api.codeclimate.com/v1/badges/1cb0265d286a10d3a2c0/maintainability)](https://codeclimate.com/github/crishellco/vue-skillet/maintainability)
+![Actions Status](https://github.com/crishellco/vue-hasher/workflows/Build/badge.svg) ![Actions Status](https://github.com/crishellco/vue-hasher/workflows/Deploy/badge.svg) ![](badges/badge-branches.svg) ![](badges/badge-functionss.svg) ![](badges/badge-lines.svg) ![](badges/badge-statements.svg) [![Maintainability](https://api.codeclimate.com/v1/badges/1cb0265d286a10d3a2c0/maintainability)](https://codeclimate.com/github/crishellco/vue-hasher/maintainability)
 
 A Vue plugin to sync state with parsed URL hash value.
 
 _This plugin requires that your project use Vue Router_
 
-Check out the [demo](https://vue-skillet.netlify.com/)
+Check out the [demo](https://vue-hasher.netlify.com/)
 
 ## Why?
 
@@ -19,18 +19,18 @@ Check out the [demo](https://vue-skillet.netlify.com/)
 ## Install
 
 ```bash
-yarn add -D vue-skillet
+yarn add -D vue-hasher
 # or
-npm i -D vue-skillet
+npm i -D vue-hasher
 ```
 
 ```javascript
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import VueSkillet from 'vue-skillet';
+import VueHasher from 'vue-hasher';
 
 Vue.use(VueRouter);
-Vue.use(VueSkillet);
+Vue.use(VueHasher);
 ```
 
 ## Examples
@@ -57,7 +57,7 @@ Vue.use(VueSkillet);
        * the first argument is the local state key
        * the second argument is the hash key
        */
-      this.$sk.sync('term', 'term');
+      this.$hasher.sync('term', 'term');
     }
   };
 </script>
@@ -76,7 +76,7 @@ export default {
   },
 
   beforeMount() {
-    this.$sk.sync('showModal', 'showAddUserModal', (newVal) => {
+    this.$hasher.sync('showModal', 'showAddUserModal', (newVal) => {
       this.$store.commit('users/setShowModal', newVal);
     });
   }
@@ -85,7 +85,7 @@ export default {
 
 ## Hash Encoding and Decoding
 
-- When a hash is set via a VueSkillet mixin method, it is first encoded using the [qs](https://www.npmjs.com/package/qs) library's `stringify` method.
+- When a hash is set via a VueHasher mixin method, it is first encoded using the [qs](https://www.npmjs.com/package/qs) library's `stringify` method.
 - When a hash is privided by the global `$hash` computed property, it is decoded using the [qs](https://www.npmjs.com/package/qs) library's `parse` method.
   - String values `true` and `false` are coicerced to booleans.
 
@@ -118,7 +118,7 @@ Provides hash information
 
 ### Methods
 
-#### vm.\$sk.clear()
+#### vm.\$hasher.clear()
 
 Clears hash
 
@@ -126,7 +126,7 @@ Clears hash
 
 ---
 
-#### vm.\$sk.exists(key)
+#### vm.\$hasher.exists(key)
 
 Provides if hash key exists
 
@@ -136,7 +136,7 @@ Provides if hash key exists
 
 ---
 
-#### vm.\$sk.remove(key)
+#### vm.\$hasher.remove(key)
 
 Removes hash value by key
 
@@ -146,7 +146,7 @@ Removes hash value by key
 
 ---
 
-#### vm.\$sk.replace(hash)
+#### vm.\$hasher.replace(hash)
 
 Replaces hash with new value
 
@@ -156,7 +156,7 @@ Replaces hash with new value
 
 ---
 
-#### vm.\$sk.set(key, value)
+#### vm.\$hasher.set(key, value)
 
 Sets hash value by key
 
@@ -167,7 +167,7 @@ Sets hash value by key
 
 ---
 
-#### vm.\$sk.sync(key, watch, hashParsedWatchCallback)
+#### vm.\$hasher.sync(key, watch, hashParsedWatchCallback)
 
 Syncs a hash key with specific component state.
 

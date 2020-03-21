@@ -34,7 +34,7 @@ export default {
       replace(parsed);
     };
 
-    this.$sk = {
+    this.$hasher = {
       clear: () => {
         replace();
       },

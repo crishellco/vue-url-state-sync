@@ -1,5 +1,5 @@
 {
-  "name": "vue-skillet",
+  "name": "vue-hasher",
   "version": "0.1.1",
   "author": "Chris Mitchell (@crishellco)",
   "description": "Deep linking Vue state using hash",
@@ -17,13 +17,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/crishellco/vue-skillet.git"
+    "url": "git+https://github.com/crishellco/vue-hasher.git"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/crishellco/vue-skillet/issues"
+    "url": "https://github.com/crishellco/vue-hasher/issues"
   },
-  "homepage": "https://crishellco.github.io/vue-skillet/",
+  "homepage": "https://crishellco.github.io/vue-hasher/",
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/plugin-proposal-class-properties": "^7.5.5",

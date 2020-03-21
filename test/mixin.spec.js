@@ -1,7 +1,7 @@
 import { createLocalVue, mount } from '@vue/test-utils';
 import VueRouter from 'vue-router';
 
-import VueSkillet from '../src/';
+import VueHasher from '../src/';
 import { parseHash } from '../src/mixin';
 
 const component = {
@@ -17,7 +17,7 @@ describe('mixin.js', () => {
     localVue = createLocalVue();
     router = new VueRouter();
     localVue.use(VueRouter);
-    localVue.use(VueSkillet);
+    localVue.use(VueHasher);
 
     wrapper = mount(component, {
       data() {
@@ -38,52 +38,52 @@ describe('mixin.js', () => {
   });
 
   it('should correctly set the hash', () => {
-    wrapper.vm.$sk.replace({ term: 'foobar' });
+    wrapper.vm.$hasher.replace({ term: 'foobar' });
     expect(wrapper.vm.$route.hash).toBe('#term=foobar');
 
-    wrapper.vm.$sk.replace({ term: '' });
+    wrapper.vm.$hasher.replace({ term: '' });
     expect(wrapper.vm.$route.hash).toBe('#term=');
 
-    wrapper.vm.$sk.replace({ filters: [{ name: 'ric flair' }] });
+    wrapper.vm.$hasher.replace({ filters: [{ name: 'ric flair' }] });
     expect(wrapper.vm.$route.hash).toBe('#filters%5B0%5D%5Bname%5D=ric%20flair');
 
-    wrapper.vm.$sk.replace();
+    wrapper.vm.$hasher.replace();
     expect(wrapper.vm.$route.hash).toBe('');
   });
 
   it('should correctly return if a key exists', () => {
     wrapper.vm.$router.push({ hash: 'term=foobar' });
-    expect(wrapper.vm.$sk.exists('term')).toBe(true);
-    expect(wrapper.vm.$sk.exists('reeeee')).toBe(false);
+    expect(wrapper.vm.$hasher.exists('term')).toBe(true);
+    expect(wrapper.vm.$hasher.exists('reeeee')).toBe(false);
 
-    wrapper.vm.$sk.remove('term');
-    expect(wrapper.vm.$sk.exists('term')).toBe(false);
+    wrapper.vm.$hasher.remove('term');
+    expect(wrapper.vm.$hasher.exists('term')).toBe(false);
   });
 
   it('should correctly clear the hash', () => {
-    wrapper.vm.$sk.clear();
+    wrapper.vm.$hasher.clear();
 
     expect(wrapper.vm.$route.hash).toBe('');
   });
 
   it('should correctly set a hash value', () => {
-    wrapper.vm.$sk.set('ric', 'flair');
+    wrapper.vm.$hasher.set('ric', 'flair');
     expect(wrapper.vm.$route.hash).toBe('#ric=flair');
 
-    wrapper.vm.$sk.set('ricflair');
+    wrapper.vm.$hasher.set('ricflair');
     expect(wrapper.vm.$route.hash).toBe('#ric=flair&ricflair=');
   });
 
   it('should correctly replace the hash', () => {
-    wrapper.vm.$sk.replace({ ric: 'flair' });
+    wrapper.vm.$hasher.replace({ ric: 'flair' });
     expect(wrapper.vm.$route.hash).toBe('#ric=flair');
 
-    wrapper.vm.$sk.replace();
+    wrapper.vm.$hasher.replace();
     expect(wrapper.vm.$route.hash).toBe('');
   });
 
   it('should correctly sync state to hash', done => {
-    wrapper.vm.$sk.sync('showModal', 'modal');
+    wrapper.vm.$hasher.sync('showModal', 'modal');
 
     wrapper.setData({ modal: true });
     wrapper.vm.$nextTick(() => {
@@ -93,10 +93,10 @@ describe('mixin.js', () => {
   });
 
   it('should correctly bail on sync state to hash', done => {
-    wrapper.vm.$sk.sync('showModal', 'modal');
+    wrapper.vm.$hasher.sync('showModal', 'modal');
 
-    const $set = (wrapper.vm.$sk.set = jest.fn());
-    const $remove = (wrapper.vm.$sk.remove = jest.fn());
+    const $set = (wrapper.vm.$hasher.set = jest.fn());
+    const $remove = (wrapper.vm.$hasher.remove = jest.fn());
 
     wrapper.setData({ modal: false });
     wrapper.vm.$nextTick(() => {
@@ -117,7 +117,7 @@ describe('mixin.js', () => {
       router
     });
 
-    wrapper.vm.$sk.sync('showModal', 'modal');
+    wrapper.vm.$hasher.sync('showModal', 'modal');
 
     wrapper.vm.$router.push({ hash: 'showModal=true' });
     wrapper.vm.$nextTick(() => {
@@ -137,7 +137,7 @@ describe('mixin.js', () => {
       router
     });
 
-    wrapper.vm.$sk.sync('showModal', 'modal');
+    wrapper.vm.$hasher.sync('showModal', 'modal');
 
     wrapper.setData({ modal: true });
     wrapper.vm.$nextTick(() => {
@@ -147,7 +147,7 @@ describe('mixin.js', () => {
   });
 
   it('should correctly sync hash to state', done => {
-    wrapper.vm.$sk.sync('showModal', 'modal');
+    wrapper.vm.$hasher.sync('showModal', 'modal');
 
     wrapper.vm.$router.push({ hash: 'showModal=true' });
     wrapper.vm.$nextTick(() => {
@@ -159,7 +159,7 @@ describe('mixin.js', () => {
   it('should correctly envoke callback from hash change', done => {
     const callback = jest.fn();
 
-    wrapper.vm.$sk.sync('showModal', 'modal', callback);
+    wrapper.vm.$hasher.sync('showModal', 'modal', callback);
     callback.mockReset();
 
     wrapper.vm.$router.push({ hash: '' });
@@ -174,7 +174,7 @@ describe('mixin.js', () => {
   it('should correctly bail callback from hash change', done => {
     const callback = jest.fn();
 
-    wrapper.vm.$sk.sync('showModal', 'modal', callback);
+    wrapper.vm.$hasher.sync('showModal', 'modal', callback);
     callback.mockReset();
 
     wrapper.vm.$router.push({ hash: 'showModal=false' });
@@ -188,7 +188,7 @@ describe('mixin.js', () => {
   it('should correctly bail callback from hash change to undefined', done => {
     const callback = jest.fn();
 
-    wrapper.vm.$sk.sync('showModal', 'modal', callback);
+    wrapper.vm.$hasher.sync('showModal', 'modal', callback);
     callback.mockReset();
 
     wrapper.vm.$router.push({ hash: 'showModal=undefined' });

@@ -140,8 +140,8 @@ export default {
   },
 
   beforeMount() {
-    this.$sk.sync('term', 'term');
-    this.$sk.sync('filters', 'filters', (filters = { animal: '', color: '', gender: '' }) => {
+    this.$hasher.sync('term', 'term');
+    this.$hasher.sync('filters', 'filters', (filters = { animal: '', color: '', gender: '' }) => {
       this.$set(this, 'filters', { ...filters });
     });
   }
