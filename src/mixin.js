@@ -12,10 +12,10 @@ export default {
   beforeMount() {
     this.$hashUnwatchers = [];
 
-    const replace = (hash = {}) => {
+    const replace = async (hash = {}) => {
       const route = { hash: `${query.stringify(hash)}` };
 
-      this.$router.push(
+      await this.$router.push(
         route,
         () => {},
         () => {}
@@ -60,17 +60,13 @@ export default {
             this[watch] = value;
           });
 
-        hashParsedWatchCallback.bind(this);
-
-        hashParsedWatchCallback(
-          this.$hash.parsed[key] || this.$hash.parsed[key] === 0
-            ? this.$hash.parsed[key]
-            : this[watch]
-        );
+        this.$hash.parsed[key] || this.$hash.parsed[key] === 0
+          ? hashParsedWatchCallback(this.$hash.parsed[key])
+          : set(key, this[watch]);
 
         this.$hashUnwatchers.push(
           this.$watch('$hash.parsed', newVal => {
-            if (typeof newVal[key] === 'undefined' || isEqual(newVal[key], this[watch])) {
+            if (isEqual(newVal[key], this[watch])) {
               return;
             }
 
@@ -86,7 +82,7 @@ export default {
                 return;
               }
 
-              newVal || newVal === 0 ? set(key, newVal) : remove(key);
+              set(key, newVal);
             },
             { deep: true }
           )
