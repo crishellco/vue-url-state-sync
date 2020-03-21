@@ -95,7 +95,7 @@ export default {
 
 ![](assets/url-filters.png)
 
-![](assets/computed-filters .png)
+![](assets/computed-filters.png)
 
 ## Global Mixin
 
