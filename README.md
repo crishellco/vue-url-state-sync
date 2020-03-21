@@ -2,7 +2,7 @@
 
 ![Actions Status](https://github.com/crishellco/vue-hasher/workflows/Build/badge.svg) ![Actions Status](https://github.com/crishellco/vue-hasher/workflows/Deploy/badge.svg) ![](badges/badge-branches.svg) ![](badges/badge-functionss.svg) ![](badges/badge-lines.svg) ![](badges/badge-statements.svg) [![Maintainability](https://api.codeclimate.com/v1/badges/1cb0265d286a10d3a2c0/maintainability)](https://codeclimate.com/github/crishellco/vue-hasher/maintainability)
 
-A Vue plugin to sync state with parsed URL hash value.
+A Vue plugin to sync state with URL Hash.
 
 _This plugin requires that your project use Vue Router_
 

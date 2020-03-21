@@ -1,8 +1,8 @@
 {
   "name": "vue-hasher",
-  "version": "0.1.1",
+  "version": "0.1.0",
   "author": "Chris Mitchell (@crishellco)",
-  "description": "Deep linking Vue state using hash",
+  "description": "A Vue plugin to sync state with URL Hash.",
   "main": "dist/index.js",
   "files": [
     "demo",
