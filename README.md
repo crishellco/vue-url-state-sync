@@ -1,6 +1,6 @@
 # Vue Skillet
 
-[![Codeship Status for crishellco/vue-skillet](https://app.codeship.com/projects/b9f076d0-ffc8-0137-c63e-5e5d9bf61b75/status?branch=master)](https://app.codeship.com/projects/378002) ![](badges/badge-branches.svg) ![](badges/badge-functionss.svg) ![](badges/badge-lines.svg) ![](badges/badge-statements.svg)
+[![Codeship Status for crishellco/vue-skillet](https://app.codeship.com/projects/04e77330-4d5e-0138-f30e-5228d651c9f6/status?branch=master)](https://app.codeship.com/projects/389650) ![](badges/badge-branches.svg) ![](badges/badge-functionss.svg) ![](badges/badge-lines.svg) ![](badges/badge-statements.svg) [![Maintainability](https://api.codeclimate.com/v1/badges/1cb0265d286a10d3a2c0/maintainability)](https://codeclimate.com/github/crishellco/vue-skillet/maintainability)
 
 A Vue plugin to sync state with parsed URL hash value.
 
