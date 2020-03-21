@@ -32,13 +32,17 @@
       "node": true
     },
     "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
+      "plugin:vue/recommended",
+      "eslint:recommended",
+      "prettier/vue"
+    ],
+    "plugins": [
+      "prettier",
+      "vue"
     ],
     "parserOptions": {
       "parser": "babel-eslint"
-    },
-    "rules": {}
+    }
   },
   "browserslist": [
     "> 1%",

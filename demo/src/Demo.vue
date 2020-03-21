@@ -26,15 +26,15 @@
       <div class="flex-none flex items-center ml-4 justify-end pt-4">
         <div class="flex items-center flex-1">
           <div class="font-semibold text-gray-800 ml-4">Male</div>
-          <input type="radio" value="male" v-model="filters.gender" class="ml-2" />
+          <input v-model="filters.gender" type="radio" value="male" class="ml-2" />
         </div>
         <div class="flex items-center flex-1">
           <div class="font-semibold text-gray-800 ml-4">Female</div>
-          <input type="radio" value="female" v-model="filters.gender" class="ml-2" />
+          <input v-model="filters.gender" type="radio" value="female" class="ml-2" />
         </div>
         <div class="flex items-center flex-1">
           <div class="font-semibold text-gray-800 ml-4">All</div>
-          <input type="radio" value="" v-model="filters.gender" class="ml-2" />
+          <input v-model="filters.gender" type="radio" value="" class="ml-2" />
         </div>
       </div>
     </div>
@@ -70,16 +70,9 @@
 import users from './users';
 
 export default {
-  computed: {
-    filteredUsers() {
-      return this.users.filter(({ name, favoriteAnimal, favoriteColor, gender }) => {
-        return (
-          (this.term ? name.toLowerCase().indexOf(this.term.toLowerCase()) > -1 : true) &&
-          (this.filters.animal ? this.filters.animal === favoriteAnimal : true) &&
-          (this.filters.color ? this.filters.color === favoriteColor : true) &&
-          (this.filters.gender ? this.filters.gender === gender : true)
-        );
-      });
+  filters: {
+    pretty: function(value) {
+      return JSON.stringify(value, null, 2);
     }
   },
   data() {
@@ -93,9 +86,16 @@ export default {
       users
     };
   },
-  filters: {
-    pretty: function(value) {
-      return JSON.stringify(value, null, 2);
+  computed: {
+    filteredUsers() {
+      return this.users.filter(({ name, favoriteAnimal, favoriteColor, gender }) => {
+        return (
+          (this.term ? name.toLowerCase().indexOf(this.term.toLowerCase()) > -1 : true) &&
+          (this.filters.animal ? this.filters.animal === favoriteAnimal : true) &&
+          (this.filters.color ? this.filters.color === favoriteColor : true) &&
+          (this.filters.gender ? this.filters.gender === gender : true)
+        );
+      });
     }
   },
 
