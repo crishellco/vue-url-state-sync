@@ -9,7 +9,7 @@
       </div>
       <div class="flex-1 ml-4">
         <div class="font-semibold text-gray-800">
-          Filter byFavorite Color
+          Filter by Favorite Color
         </div>
         <select v-model="filters.color" class="border-2 px-2 py-1 appearance-none w-full">
           <option />
