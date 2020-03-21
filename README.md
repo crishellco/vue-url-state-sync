@@ -35,24 +35,30 @@ Vue.use(VueSkillet);
 
 #### Basic sync
 
-```javascript
-export default {
-  name: 'Users',
+```html
+<template>
+  <input v-model="term" type="text" placeholder="Search term" />
+</template>
 
-  data() {
-    return {
-      showModal: false
-    };
-  },
+<script>
+  export default {
+    name: 'Users',
 
-  beforeMount() {
-    /**
-     * showModal is the local state key
-     * showAddUserModal is hash value
-     */
-    this.$hashSyncState('showModal', 'showAddUserModal');
-  }
-};
+    data() {
+      return {
+        term: ''
+      };
+    },
+
+    beforeMount() {
+      /**
+       * the first argument is the local state key
+       * the second argument is the hash key
+       */
+      this.$hashSyncState('term', 'term');
+    }
+  };
+</script>
 ```
 
 #### Vuex
@@ -87,7 +93,7 @@ export default {
 
 ![](assets/url-filters.png)
 
-![](assets/computed-filters.png)
+![](assets/computed-filters .png)
 
 ## Global Mixin
 
@@ -151,7 +157,11 @@ Sets hash value by key
 
 #### vm.\$hashSyncState(key, watch, hashParsedWatchCallback)
 
-Begins syncing a hash key with state.
+Syncs a hash key with specific component state.
+
+When first called, it will sync the current hash to the state. It then sets up two watchers -- one for hash changes and one for state changes.
+
+Watchers are destroyed when the component is destroyed.
 
 - Arguments
   - `{string} key`
