@@ -1,11 +1,72 @@
 <template>
   <div class="flex flex-col items-center mt-32">
+    <div class="flex flex-col mb-10" style="width: 40rem;">
+      <div class="flex border-b-2 border-gray-400">
+        <div
+          class="flex-1 text-center cursor-pointer py-2 hover:bg-gray-200 rounded-t"
+          :class="{ 'bg-gray-400 hover:bg-gray-400': tab === 'Tab 1' }"
+          @click="tab = 'Tab 1'"
+        >
+          Tab 1
+        </div>
+        <div
+          class="flex-1 text-center cursor-pointer py-2 hover:bg-gray-200 rounded-t"
+          :class="{ 'bg-gray-400 hover:bg-gray-400': tab === 'Tab 2' }"
+          @click="tab = 'Tab 2'"
+        >
+          Tab 2
+        </div>
+        <div
+          class="flex-1 text-center cursor-pointer py-2 hover:bg-gray-200 rounded-t"
+          :class="{ 'bg-gray-400 hover:bg-gray-400': tab === 'Tab 3' }"
+          @click="tab = 'Tab 3'"
+        >
+          Tab 3
+        </div>
+        <div
+          class="flex-1 text-center cursor-pointer py-2 hover:bg-gray-200 rounded-t"
+          :class="{ 'bg-gray-400 hover:bg-gray-400': tab === 'Tab 4' }"
+          @click="tab = 'Tab 4'"
+        >
+          Tab 4
+        </div>
+      </div>
+      <div v-if="tab === 'Tab 1'" class="p-4">
+        Leverage agile frameworks to provide a robust synopsis for high level overviews. Iterative
+        approaches to corporate strategy foster collaborative thinking to further the overall value
+        proposition. Organically grow the holistic world view of disruptive innovation via workplace
+        diversity and empowerment.
+      </div>
+      <div v-if="tab === 'Tab 2'" class="p-4">
+        Bring to the table win-win survival strategies to ensure proactive domination. At the end of
+        the day, going forward, a new normal that has evolved from generation X is on the runway
+        heading towards a streamlined cloud solution. User generated content in real-time will have
+        multiple touchpoints for offshoring.
+      </div>
+      <div v-if="tab === 'Tab 3'" class="p-4">
+        Capitalize on low hanging fruit to identify a ballpark value added activity to beta test.
+        Override the digital divide with additional clickthroughs from DevOps. Nanotechnology
+        immersion along the information highway will close the loop on focusing solely on the bottom
+        line.
+      </div>
+      <div v-if="tab === 'Tab 4'" class="p-4">
+        Podcasting operational change management inside of workflows to establish a framework.
+        Taking seamless key performance indicators offline to maximise the long tail. Keeping your
+        eye on the ball while performing a deep dive on the start-up mentality to derive convergence
+        on cross-platform integration.
+      </div>
+    </div>
     <div class="flex justify-center items-center w-2/3">
       <div class="flex-1">
         <div class="font-semibold text-gray-800">
           Search by Name
         </div>
-        <input v-model="term" type="text" class="border-2 px-2 py-1 w-full" />
+        <input
+          :value="term"
+          type="text"
+          class="border-2 px-2 py-1 w-full"
+          @input="handleSearchInput"
+        />
       </div>
       <div class="flex-1 ml-4">
         <div class="font-semibold text-gray-800">
@@ -107,6 +168,8 @@
 </template>
 
 <script>
+import debounce from 'lodash.debounce';
+
 import users from './users';
 
 export default {
@@ -115,6 +178,7 @@ export default {
       return JSON.stringify(value, null, 2);
     }
   },
+
   data() {
     return {
       filters: {
@@ -122,10 +186,12 @@ export default {
         color: '',
         gender: ''
       },
+      tab: 'Tab 1',
       term: '',
       users
     };
   },
+
   computed: {
     filteredUsers() {
       return this.users.filter(({ name, favoriteAnimal, favoriteColor, gender }) => {
@@ -140,12 +206,17 @@ export default {
   },
 
   beforeMount() {
+    this.$hasher.sync('tab', 'tab');
     this.$hasher.sync('term', 'term');
     this.$hasher.sync('filters', 'filters', (filters = { animal: '', color: '', gender: '' }) => {
       this.$set(this, 'filters', { ...filters });
     });
+  },
+
+  methods: {
+    handleSearchInput: debounce(function({ target: { value } }) {
+      this.term = value;
+    }, 300)
   }
 };
 </script>
-
-<style scoped></style>

@@ -58,7 +58,11 @@ export default {
 
         hashParsedWatchCallback.bind(this);
 
-        hashParsedWatchCallback(this.$hash.parsed[key]);
+        hashParsedWatchCallback(
+          this.$hash.parsed[key] || this.$hash.parsed[key] === 0
+            ? this.$hash.parsed[key]
+            : this[watch]
+        );
 
         this.$hashUnwatchers.push(
           this.$watch('$hash.parsed', newVal => {

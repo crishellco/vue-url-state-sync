@@ -139,6 +139,7 @@ describe('mixin.js', () => {
 
     wrapper.vm.$hasher.sync('showModal', 'modal');
 
+    wrapper.setData({ modal: false });
     wrapper.setData({ modal: true });
     wrapper.vm.$nextTick(() => {
       expect(wrapper.vm.$route.hash).toBe('#showModal=true');
