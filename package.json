@@ -17,13 +17,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/crishellco/vue-skill.git"
+    "url": "git+https://github.com/crishellco/vue-skillet.git"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/crishellco/vue-skill/issues"
+    "url": "https://github.com/crishellco/vue-skillet/issues"
   },
-  "homepage": "https://crishellco.github.io/vue-skill/",
+  "homepage": "https://crishellco.github.io/vue-skillet/",
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
