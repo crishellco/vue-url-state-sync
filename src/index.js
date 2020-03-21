@@ -1,4 +1,8 @@
-const install = (Vue, options) => {};
+import mixin from './mixin';
+
+const install = Vue => {
+  Vue.mixin(mixin);
+};
 
 const plugin = {
   install

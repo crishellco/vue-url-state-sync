@@ -5,7 +5,7 @@ module.exports = {
   entry: ['./src/index.js'],
   output: {
     library: 'VuePluginTemplate',
-    libraryTarget: 'umd',
+    libraryTarget: 'commonjs',
     filename: 'index.js',
     globalObject: "typeof self !== 'undefined' ? self : this"
   },

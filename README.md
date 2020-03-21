@@ -1,36 +1,153 @@
-# Vue Plugin Template
+# Vue Skillet
 
-[![Codeship Status for crishellco/vue-plugin-template](https://app.codeship.com/projects/b9f076d0-ffc8-0137-c63e-5e5d9bf61b75/status?branch=master)](https://app.codeship.com/projects/378002)
-![](badges/badge-branches.svg)
-![](badges/badge-functionss.svg)
-![](badges/badge-lines.svg)
-![](badges/badge-statements.svg)
+[![Codeship Status for crishellco/vue-skillet](https://app.codeship.com/projects/b9f076d0-ffc8-0137-c63e-5e5d9bf61b75/status?branch=master)](https://app.codeship.com/projects/378002) ![](badges/badge-branches.svg) ![](badges/badge-functionss.svg) ![](badges/badge-lines.svg) ![](badges/badge-statements.svg)
 
-Subheading here
+A Vue plugin to sync state with parsed URL hash value.
 
-description here
-
-_This plugin requires that your project use Vuex_
+_This plugin requires that your project use Vue Router_
 
 ## Install
 
 ```bash
-yarn add -D vue-plugin-template
+yarn add -D vue-skillet
 # or
-npm i -D vue-plugin-template
+npm i -D vue-skillet
 ```
 
 ```javascript
 import Vue from 'vue';
-import VuePluginTemplate from 'vue-plugin-template';
+import VueRouter from 'vue-router';
+import VueSkillet from 'vue-skillet';
 
-Vue.use(VuePluginTemplate);
+Vue.use(VueRouter);
+Vue.use(VueSkillet);
 ```
 
-## Component Usage
+## Hash Encoding and Decoding
+
+- When a hash is set via a VueSkillet mixin method, it is first encoded using the [qs](https://www.npmjs.com/package/qs) library's `stringify` method.
+- When a hash is privided by the global `$hash` computed property, it is decoded using the [qs](https://www.npmjs.com/package/qs) library's `parse` method.
+  - String values `true` and `false` are coicerced to booleans.
+
+## Examples
+
+#### Basic sync
 
 ```javascript
+export default {
+  name: 'Users',
+
+  data() {
+    return {
+      showModal: false
+    };
+  },
+
+  beforeMount() {
+    /**
+     * showModal is the local state key
+     * showAddUserModal is hash value
+     */
+    this.$hashSyncState('showModal', 'showAddUserModal');
+  }
+};
 ```
+
+#### Vuex
+
+```javascript
+import { mapState } = 'vuex';
+
+export default {
+  name: 'Users',
+
+  computed: {
+    ...mapState('users', ['showModal'])
+  },
+
+  beforeMount() {
+    this.$hashSyncState('showModal', 'showAddUserModal', (newVal) => {
+      this.$store.commit('users/setShowModal', newVal);
+    });
+  }
+};
+```
+
+## Global Mixin
+
+A global mixin is installed by this plugin.
+
+### Computed
+
+#### vm.\$hash
+
+Provides hash information
+
+- Returns `{object}`
+
+```javascript
+{
+	parsed: {
+		term: 'foobar'
+	},
+	raw: '#term=foobar'
+}
+```
+
+### Methods
+
+#### vm.\$hashClear()
+
+Clears hash
+
+- Returns `{void}`
+
+#### vm.\$hashKeyExists(key)
+
+Provides if hash key exists
+
+- Arguments
+  - `{string} key`
+- Returns `{boolean}`
+
+#### vm.\$hashRemoveValue(key)
+
+Removes hash value by key
+
+- Arguments
+  - `{object} hash`
+- Returns `{void}`
+
+#### vm.\$hashReplace(hash)
+
+Replaces hash with new value
+
+- Arguments
+  - `{object} hash`
+- Returns `{void}`
+
+#### vm.\$hashSetValue(key, value)
+
+Sets hash value by key
+
+- Arguments
+  - `{string} key`
+  - `{mixed} value`
+- Returns `{void}`
+
+#### vm.\$hashSyncState(key, watch, hashParsedWatchCallback)
+
+Begins syncing a hash key with state.
+
+- Arguments
+  - `{string} key`
+  - `{string} value`
+  - `{function} hashParsedWatchCallback` optional
+    - Called when Vue Router hash change detected
+    - Invoked immediatey
+    - Arguments
+      - `{mixed} newVal`
+- Returns `{void}`
 
 ## Scripts
 
