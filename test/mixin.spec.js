@@ -38,52 +38,52 @@ describe('mixin.js', () => {
   });
 
   it('should correctly set the hash', () => {
-    wrapper.vm.$hashReplace({ term: 'foobar' });
+    wrapper.vm.$sk.replace({ term: 'foobar' });
     expect(wrapper.vm.$route.hash).toBe('#term=foobar');
 
-    wrapper.vm.$hashReplace({ term: '' });
+    wrapper.vm.$sk.replace({ term: '' });
     expect(wrapper.vm.$route.hash).toBe('#term=');
 
-    wrapper.vm.$hashReplace({ filters: [{ name: 'ric flair' }] });
+    wrapper.vm.$sk.replace({ filters: [{ name: 'ric flair' }] });
     expect(wrapper.vm.$route.hash).toBe('#filters%5B0%5D%5Bname%5D=ric%20flair');
 
-    wrapper.vm.$hashReplace();
+    wrapper.vm.$sk.replace();
     expect(wrapper.vm.$route.hash).toBe('');
   });
 
   it('should correctly return if a key exists', () => {
     wrapper.vm.$router.push({ hash: 'term=foobar' });
-    expect(wrapper.vm.$hashKeyExists('term')).toBe(true);
-    expect(wrapper.vm.$hashKeyExists('reeeee')).toBe(false);
+    expect(wrapper.vm.$sk.exists('term')).toBe(true);
+    expect(wrapper.vm.$sk.exists('reeeee')).toBe(false);
 
-    wrapper.vm.$hashRemoveValue('term');
-    expect(wrapper.vm.$hashKeyExists('term')).toBe(false);
+    wrapper.vm.$sk.remove('term');
+    expect(wrapper.vm.$sk.exists('term')).toBe(false);
   });
 
   it('should correctly clear the hash', () => {
-    wrapper.vm.$hashClear();
+    wrapper.vm.$sk.clear();
 
     expect(wrapper.vm.$route.hash).toBe('');
   });
 
   it('should correctly set a hash value', () => {
-    wrapper.vm.$hashSetValue('ric', 'flair');
+    wrapper.vm.$sk.set('ric', 'flair');
     expect(wrapper.vm.$route.hash).toBe('#ric=flair');
 
-    wrapper.vm.$hashSetValue('ricflair');
+    wrapper.vm.$sk.set('ricflair');
     expect(wrapper.vm.$route.hash).toBe('#ric=flair&ricflair=');
   });
 
   it('should correctly replace the hash', () => {
-    wrapper.vm.$hashReplace({ ric: 'flair' });
+    wrapper.vm.$sk.replace({ ric: 'flair' });
     expect(wrapper.vm.$route.hash).toBe('#ric=flair');
 
-    wrapper.vm.$hashReplace();
+    wrapper.vm.$sk.replace();
     expect(wrapper.vm.$route.hash).toBe('');
   });
 
   it('should correctly sync state to hash', done => {
-    wrapper.vm.$hashSyncState('showModal', 'modal');
+    wrapper.vm.$sk.sync('showModal', 'modal');
 
     wrapper.setData({ modal: true });
     wrapper.vm.$nextTick(() => {
@@ -93,15 +93,15 @@ describe('mixin.js', () => {
   });
 
   it('should correctly bail on sync state to hash', done => {
-    wrapper.vm.$hashSyncState('showModal', 'modal');
+    wrapper.vm.$sk.sync('showModal', 'modal');
 
-    const $hashSetValue = (wrapper.vm.$hashSetValue = jest.fn());
-    const $hashRemoveValue = (wrapper.vm.$hashRemoveValue = jest.fn());
+    const $set = (wrapper.vm.$sk.set = jest.fn());
+    const $remove = (wrapper.vm.$sk.remove = jest.fn());
 
     wrapper.setData({ modal: false });
     wrapper.vm.$nextTick(() => {
-      expect($hashSetValue).not.toHaveBeenCalledWith();
-      expect($hashRemoveValue).not.toHaveBeenCalledWith();
+      expect($set).not.toHaveBeenCalledWith();
+      expect($remove).not.toHaveBeenCalledWith();
       done();
     });
   });
@@ -117,15 +117,11 @@ describe('mixin.js', () => {
       router
     });
 
-    wrapper.vm.$hashSyncState('showModal', 'modal');
-
-    const $hashSetValue = (wrapper.vm.$hashSetValue = jest.fn());
-    const $hashRemoveValue = (wrapper.vm.$hashRemoveValue = jest.fn());
+    wrapper.vm.$sk.sync('showModal', 'modal');
 
     wrapper.vm.$router.push({ hash: 'showModal=true' });
     wrapper.vm.$nextTick(() => {
-      expect($hashSetValue).not.toHaveBeenCalledWith();
-      expect($hashRemoveValue).not.toHaveBeenCalledWith();
+      expect(wrapper.vm.$route.hash).toBe('#showModal=true');
       done();
     });
   });
@@ -134,29 +130,24 @@ describe('mixin.js', () => {
     wrapper = mount(component, {
       data() {
         return {
-          modal: true
+          modal: false
         };
       },
       localVue,
       router
     });
 
-    wrapper.vm.$router.push({ hash: 'showModal=1' });
-    wrapper.vm.$hashSyncState('showModal', 'modal');
-
-    const $hashSetValue = (wrapper.vm.$hashSetValue = jest.fn());
-    const $hashRemoveValue = (wrapper.vm.$hashRemoveValue = jest.fn());
+    wrapper.vm.$sk.sync('showModal', 'modal');
 
     wrapper.setData({ modal: true });
     wrapper.vm.$nextTick(() => {
-      expect($hashSetValue).toHaveBeenCalledWith('showModal', true);
-      expect($hashRemoveValue).not.toHaveBeenCalledWith();
+      expect(wrapper.vm.$route.hash).toBe('#showModal=true');
       done();
     });
   });
 
   it('should correctly sync hash to state', done => {
-    wrapper.vm.$hashSyncState('showModal', 'modal');
+    wrapper.vm.$sk.sync('showModal', 'modal');
 
     wrapper.vm.$router.push({ hash: 'showModal=true' });
     wrapper.vm.$nextTick(() => {
@@ -168,7 +159,7 @@ describe('mixin.js', () => {
   it('should correctly envoke callback from hash change', done => {
     const callback = jest.fn();
 
-    wrapper.vm.$hashSyncState('showModal', 'modal', callback);
+    wrapper.vm.$sk.sync('showModal', 'modal', callback);
     callback.mockReset();
 
     wrapper.vm.$router.push({ hash: '' });
@@ -183,7 +174,7 @@ describe('mixin.js', () => {
   it('should correctly bail callback from hash change', done => {
     const callback = jest.fn();
 
-    wrapper.vm.$hashSyncState('showModal', 'modal', callback);
+    wrapper.vm.$sk.sync('showModal', 'modal', callback);
     callback.mockReset();
 
     wrapper.vm.$router.push({ hash: 'showModal=false' });
@@ -197,7 +188,7 @@ describe('mixin.js', () => {
   it('should correctly bail callback from hash change to undefined', done => {
     const callback = jest.fn();
 
-    wrapper.vm.$hashSyncState('showModal', 'modal', callback);
+    wrapper.vm.$sk.sync('showModal', 'modal', callback);
     callback.mockReset();
 
     wrapper.vm.$router.push({ hash: 'showModal=undefined' });

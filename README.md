@@ -57,7 +57,7 @@ Vue.use(VueSkillet);
        * the first argument is the local state key
        * the second argument is the hash key
        */
-      this.$hashSyncState('term', 'term');
+      this.$sk.sync('term', 'term');
     }
   };
 </script>
@@ -76,7 +76,7 @@ export default {
   },
 
   beforeMount() {
-    this.$hashSyncState('showModal', 'showAddUserModal', (newVal) => {
+    this.$sk.sync('showModal', 'showAddUserModal', (newVal) => {
       this.$store.commit('users/setShowModal', newVal);
     });
   }
@@ -118,13 +118,15 @@ Provides hash information
 
 ### Methods
 
-#### vm.\$hashClear()
+#### vm.\$sk.clear()
 
 Clears hash
 
 - Returns `{void}`
 
-#### vm.\$hashKeyExists(key)
+---
+
+#### vm.\$sk.exists(key)
 
 Provides if hash key exists
 
@@ -132,7 +134,9 @@ Provides if hash key exists
   - `{string} key`
 - Returns `{boolean}`
 
-#### vm.\$hashRemoveValue(key)
+---
+
+#### vm.\$sk.remove(key)
 
 Removes hash value by key
 
@@ -140,7 +144,9 @@ Removes hash value by key
   - `{object} hash`
 - Returns `{void}`
 
-#### vm.\$hashReplace(hash)
+---
+
+#### vm.\$sk.replace(hash)
 
 Replaces hash with new value
 
@@ -148,7 +154,9 @@ Replaces hash with new value
   - `{object} hash`
 - Returns `{void}`
 
-#### vm.\$hashSetValue(key, value)
+---
+
+#### vm.\$sk.set(key, value)
 
 Sets hash value by key
 
@@ -157,7 +165,9 @@ Sets hash value by key
   - `{mixed} value`
 - Returns `{void}`
 
-#### vm.\$hashSyncState(key, watch, hashParsedWatchCallback)
+---
+
+#### vm.\$sk.sync(key, watch, hashParsedWatchCallback)
 
 Syncs a hash key with specific component state.
 

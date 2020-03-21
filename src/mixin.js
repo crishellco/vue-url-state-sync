@@ -11,6 +11,80 @@ export const parseHash = (hash = '') => {
 export default {
   beforeMount() {
     this.$hashUnwatchers = [];
+
+    const replace = (hash = {}) => {
+      const route = { hash: `${query.stringify(hash)}` };
+
+      this.$router.push(route).catch(() => {});
+    };
+
+    const remove = key => {
+      const parsed = Object.assign({}, this.$hash.parsed);
+
+      delete parsed[key];
+
+      replace(parsed);
+    };
+
+    const set = (key, value = '') => {
+      const parsed = Object.assign({}, this.$hash.parsed);
+
+      parsed[key] = value;
+
+      replace(parsed);
+    };
+
+    this.$sk = {
+      clear: () => {
+        replace();
+      },
+
+      exists: key => {
+        return has(this.$hash.parsed, key);
+      },
+
+      remove,
+
+      replace,
+
+      set,
+
+      sync: (key, watch, hashParsedWatchCallback) => {
+        hashParsedWatchCallback =
+          hashParsedWatchCallback ||
+          (value => {
+            this[watch] = value;
+          });
+
+        hashParsedWatchCallback.bind(this);
+
+        hashParsedWatchCallback(this.$hash.parsed[key]);
+
+        this.$hashUnwatchers.push(
+          this.$watch('$hash.parsed', newVal => {
+            if (typeof newVal[key] === 'undefined' || isEqual(newVal[key], this[watch])) {
+              return;
+            }
+
+            hashParsedWatchCallback(newVal[key]);
+          })
+        );
+
+        this.$hashUnwatchers.push(
+          this.$watch(
+            watch,
+            newVal => {
+              if (isEqual(newVal, this.$hash.parsed[key])) {
+                return;
+              }
+
+              newVal || newVal === 0 ? set(key, newVal) : remove(key);
+            },
+            { deep: true }
+          )
+        );
+      }
+    };
   },
 
   computed: {
@@ -24,76 +98,10 @@ export default {
     }
   },
 
-  methods: {
-    $hashClear() {
-      this.$hashReplace();
-    },
-
-    $hashKeyExists(key) {
-      return has(this.$hash.parsed, key);
-    },
-
-    $hashRemoveValue(key) {
-      const parsed = this.$hash.parsed;
-
-      delete parsed[key];
-
-      this.$hashReplace(parsed);
-    },
-
-    $hashReplace(hash = {}) {
-      this.$router.push({ hash: query.stringify(hash) });
-    },
-
-    $hashSetValue(key, value = '') {
-      const parsed = this.$hash.parsed;
-
-      parsed[key] = value;
-
-      this.$hashReplace(parsed);
-    },
-
-    $hashSyncState(key, watch, hashParsedWatchCallback) {
-      hashParsedWatchCallback =
-        hashParsedWatchCallback ||
-        (value => {
-          this[watch] = value;
-        });
-
-      hashParsedWatchCallback.bind(this);
-
-      hashParsedWatchCallback(this.$hash.parsed[key]);
-
-      this.$hashUnwatchers.push(
-        this.$watch('$hash.parsed', newVal => {
-          if (typeof newVal[key] === 'undefined' || isEqual(newVal[key], this[watch])) {
-            return;
-          }
-
-          hashParsedWatchCallback(newVal[key]);
-        })
-      );
-
-      this.$hashUnwatchers.push(
-        this.$watch(
-          watch,
-          newVal => {
-            if (isEqual(newVal, this.$hash.parsed[key])) {
-              return;
-            }
-
-            newVal || newVal === 0 ? this.$hashSetValue(key, newVal) : this.$hashRemoveValue(key);
-          },
-          { deep: true }
-        )
-      );
-    },
-
-    /* istanbul ignore next */
-    destroyed() {
-      this.$hashUnwatchers.map(unwatcher => {
-        unwatcher();
-      });
-    }
+  /* istanbul ignore next */
+  destroyed() {
+    this.$hashUnwatchers.map(unwatcher => {
+      unwatcher();
+    });
   }
 };
