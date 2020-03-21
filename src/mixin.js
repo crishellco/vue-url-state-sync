@@ -1,4 +1,4 @@
-import eq from 'lodash.eq';
+import isEqual from 'lodash.isequal';
 import has from 'lodash.has';
 import query from 'qs';
 
@@ -66,7 +66,7 @@ export default {
 
       this.$hashUnwatchers.push(
         this.$watch('$hash.parsed', newVal => {
-          if (typeof newVal[key] === 'undefined' || eq(newVal[key], this[watch])) {
+          if (typeof newVal[key] === 'undefined' || isEqual(newVal[key], this[watch])) {
             return;
           }
 
@@ -75,13 +75,17 @@ export default {
       );
 
       this.$hashUnwatchers.push(
-        this.$watch(watch, newVal => {
-          if (eq(newVal, this.$hash.parsed[key])) {
-            return;
-          }
+        this.$watch(
+          watch,
+          newVal => {
+            if (isEqual(newVal, this.$hash.parsed[key])) {
+              return;
+            }
 
-          newVal || newVal === 0 ? this.$hashSetValue(key, newVal) : this.$hashRemoveValue(key);
-        })
+            newVal || newVal === 0 ? this.$hashSetValue(key, newVal) : this.$hashRemoveValue(key);
+          },
+          { deep: true }
+        )
       );
     },
 
