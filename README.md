@@ -85,12 +85,10 @@ Provides hash information
 
 - Returns `{object}`
 
-```javascript
+```
 {
-	parsed: {
-		term: 'foobar'
-	},
-	raw: '#term=foobar'
+  parsed: { term: 'foobar' },
+  raw: '#term=foobar'
 }
 ```
 
