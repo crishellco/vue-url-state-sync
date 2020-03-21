@@ -6,6 +6,8 @@ A Vue plugin to sync state with parsed URL hash value.
 
 _This plugin requires that your project use Vue Router_
 
+Check out the [demo](https://vue-skillet.netlify.com/)
+
 ## Why?
 
 - Allow users to bookmark:
