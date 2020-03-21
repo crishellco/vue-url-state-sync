@@ -5,7 +5,8 @@ name: Deploy
 
 on:
   push:
-    branches: [master]
+    branches:
+      - master
 
 jobs:
   build:
@@ -21,6 +22,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+      - run: yarn
+      - run: yarn lint
+      - run: yarn test
       - run: curl -X POST -d {} https://api.netlify.com/build_hooks/5e75d8d64fee5d79ce560f49
         env:
           CI: true
