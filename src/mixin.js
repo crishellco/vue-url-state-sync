@@ -106,7 +106,7 @@ export default {
     }
   },
 
-  destroyed() {
+  beforeDestroy() {
     this.$hashUnwatchers.map(unwatcher => {
       unwatcher();
     });
