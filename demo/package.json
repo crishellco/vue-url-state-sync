@@ -26,24 +26,6 @@
     "vue-router": "^3.1.6",
     "vue-template-compiler": "^2.6.11"
   },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/recommended",
-      "eslint:recommended",
-      "prettier/vue"
-    ],
-    "plugins": [
-      "prettier",
-      "vue"
-    ],
-    "parserOptions": {
-      "parser": "babel-eslint"
-    }
-  },
   "browserslist": [
     "> 1%",
     "last 2 versions"
