@@ -6,6 +6,14 @@ A Vue plugin to sync state with parsed URL hash value.
 
 _This plugin requires that your project use Vue Router_
 
+## Why?
+
+- Allow users to bookmark:
+  - filtered lists
+  - searched lists
+  - modal states
+  - etc.
+
 ## Install
 
 ```bash
@@ -22,12 +30,6 @@ import VueSkillet from 'vue-skillet';
 Vue.use(VueRouter);
 Vue.use(VueSkillet);
 ```
-
-## Hash Encoding and Decoding
-
-- When a hash is set via a VueSkillet mixin method, it is first encoded using the [qs](https://www.npmjs.com/package/qs) library's `stringify` method.
-- When a hash is privided by the global `$hash` computed property, it is decoded using the [qs](https://www.npmjs.com/package/qs) library's `parse` method.
-  - String values `true` and `false` are coicerced to booleans.
 
 ## Examples
 
@@ -72,6 +74,20 @@ export default {
   }
 };
 ```
+
+## Hash Encoding and Decoding
+
+- When a hash is set via a VueSkillet mixin method, it is first encoded using the [qs](https://www.npmjs.com/package/qs) library's `stringify` method.
+- When a hash is privided by the global `$hash` computed property, it is decoded using the [qs](https://www.npmjs.com/package/qs) library's `parse` method.
+  - String values `true` and `false` are coicerced to booleans.
+
+![](assets/url-term.png)
+
+![](assets/computed-term.png)
+
+![](assets/url-filters.png)
+
+![](assets/computed-filters.png)
 
 ## Global Mixin
 
