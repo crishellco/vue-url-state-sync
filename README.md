@@ -103,7 +103,7 @@ A global mixin is installed by this plugin.
 
 ### Computed
 
-#### vm.\$hash
+#### `vm.\$hash`
 
 Provides hash information
 
@@ -118,7 +118,7 @@ Provides hash information
 
 ### Methods
 
-#### vm.\$hasher.clear()
+#### `vm.\$hasher.clear()`
 
 Clears hash
 
@@ -126,7 +126,7 @@ Clears hash
 
 ---
 
-#### vm.\$hasher.exists(key)
+#### `vm.\$hasher.exists(key)`
 
 Provides if hash key exists
 
@@ -136,7 +136,7 @@ Provides if hash key exists
 
 ---
 
-#### vm.\$hasher.remove(key)
+#### `vm.\$hasher.remove(key)`
 
 Removes hash value by key
 
@@ -146,7 +146,7 @@ Removes hash value by key
 
 ---
 
-#### vm.\$hasher.replace(hash)
+#### `vm.\$hasher.replace(hash)`
 
 Replaces hash with new value
 
@@ -156,7 +156,7 @@ Replaces hash with new value
 
 ---
 
-#### vm.\$hasher.set(key, value)
+#### `vm.\$hasher.set(key, value)`
 
 Sets hash value by key
 
@@ -167,7 +167,7 @@ Sets hash value by key
 
 ---
 
-#### vm.\$hasher.sync(key, watch, hashParsedWatchCallback)
+#### `vm.\$hasher.sync(key, watch, hashParsedWatchCallback)`
 
 Syncs a hash key with specific component state.
 
