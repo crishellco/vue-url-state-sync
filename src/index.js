@@ -1,7 +1,9 @@
-import mixin from './mixin';
+import hash from './hash-mixin';
+import query from './query-mixin';
 
 const install = Vue => {
-  Vue.mixin(mixin);
+  Vue.mixin(hash);
+  Vue.mixin(query);
 };
 
 const plugin = {

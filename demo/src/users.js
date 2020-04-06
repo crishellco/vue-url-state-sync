@@ -11,7 +11,7 @@ export default [
     name: 'Cameron Mckee',
     gender: 'male',
     favoriteColor: 'red',
-    favoriteAnimal: 'car'
+    favoriteAnimal: 'cat'
   },
   {
     _id: '5e75c35501b284cc5e539a02',
@@ -81,14 +81,14 @@ export default [
     name: 'Heather Gray',
     gender: 'female',
     favoriteColor: 'red',
-    favoriteAnimal: 'car'
+    favoriteAnimal: 'cat'
   },
   {
     _id: '5e75c35533fcb9bc3a3bf49c',
     name: 'Montoya Dillon',
     gender: 'male',
     favoriteColor: 'red',
-    favoriteAnimal: 'car'
+    favoriteAnimal: 'cat'
   },
   {
     _id: '5e75c355fef59b7bcbeff11d',

@@ -1,41 +1,81 @@
-# Vue Hasher
+# Vue Url State Sync (vuss)
 
-![Actions Status](https://github.com/crishellco/vue-hasher/workflows/Build/badge.svg) ![Actions Status](https://github.com/crishellco/vue-hasher/workflows/Deploy/badge.svg) ![](badges/badge-branches.svg) ![](badges/badge-functionss.svg) ![](badges/badge-lines.svg) ![](badges/badge-statements.svg) [![Maintainability](https://api.codeclimate.com/v1/badges/1cb0265d286a10d3a2c0/maintainability)](https://codeclimate.com/github/crishellco/vue-hasher/maintainability)
+![Actions Status](https://github.com/crishellco/vue-url-state-sync/workflows/Build/badge.svg) ![Actions Status](https://github.com/crishellco/vue-url-state-sync/workflows/Deploy/badge.svg) ![](badges/badge-branches.svg) ![](badges/badge-functionss.svg) ![](badges/badge-lines.svg) ![](badges/badge-statements.svg) [![Maintainability](https://api.codeclimate.com/v1/badges/1cb0265d286a10d3a2c0/maintainability)](https://codeclimate.com/github/crishellco/vue-url-state-sync/maintainability)
 
-A Vue plugin to sync state with URL Hash.
+A Vue plugin to sync router queries and hash with state.
 
-_This plugin requires that your project use Vue Router_
+_This plugin requires that your project use Vue Router in history mode_
 
-Check out the [demo](https://vue-hasher.netlify.com/)
+Check out the [demo](https://vue-url-state-sync.netlify.com/)
+
+- [Why?](#why-)
+- [Install](#install)
+- [Examples](#examples)
+  - [Basic sync](#basic-sync)
+  - [Vuex mapState](#vuex-mapstate)
+  - [Vuex computed with setter](#vuex-computed-with-setter)
+  - [Nested State](#nested-state)
+- [Hashes vs Queries](#hashes-vs-queries)
+  - [Hashes](#hashes)
+  - [Queries](#queries)
+- [Global Mixins](#global-mixins)
+  - [Computed](#computed)
+    - [`vm.$hash`](#-vm-hash-)
+    - [`vm.$query`](#-vm-query-)
+  - [Methods](#methods)
+    - [`vm.$vuss.h.clear()`](#-vm-vusshclear---)
+    - [`vm.$vuss.h.set(hash, replaceHistory)`](#-vm-vusshset-hash--replacehistory--)
+    - [`vm.$vuss.h.sync(state, hash, onHashChange)`](#-vm-vusshsync-state--hash--onhashchange--)
+    - [`vm.$vuss.q.clear()`](#-vm-vussqclear---)
+    - [`vm.$vuss.q.exists(key)`](#-vm-vussqexists-key--)
+    - [`vm.$vuss.q.push(hash)`](#-vm-vussqpush-hash--)
+    - [`vm.$vuss.q.remove(key)`](#-vm-vussqremove-key--)
+    - [`vm.$vuss.q.set(key, value, replaceHistory)`](#-vm-vussqset-key--value--replacehistory--)
+    - [`vm.$vuss.q.sync(state, key, onQueryChange)`](#-vm-vussqsync-state--key--onquerychange--)
+- [Scripts](#scripts)
+- [How to Contribute](#how-to-contribute)
+  - [Pull Requests](#pull-requests)
+- [License](#license)
 
 ## Why?
 
-- Allow users to bookmark:
-  - filtered lists
-  - searched lists
-  - modal states
-  - etc.
+**Allow users to deep link (bookmark) to state outside of normal routing such as:**
+
+- filtered lists
+- searched lists
+- modal states
+- tabs
+- etc.
 
 ## Install
 
 ```bash
-yarn add -D vue-hasher
+yarn add -D vue-url-state-sync
 # or
-npm i -D vue-hasher
+npm i -D vue-url-state-sync
 ```
 
 ```javascript
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import VueHasher from 'vue-hasher';
+import VueUrlStateSync from 'vue-url-state-sync';
 
 Vue.use(VueRouter);
-Vue.use(VueHasher);
+Vue.use(VueUrlStateSync);
+
+const router = new Router({
+  mode: 'history', // must be in history mode for hashes to work!
+  routes: [...]
+});
+
+const app = new Vue({
+  router
+}).$mount('#app')
 ```
 
 ## Examples
 
-#### Basic sync
+### Basic sync
 
 ```html
 <template>
@@ -48,22 +88,25 @@ Vue.use(VueHasher);
 
     data() {
       return {
-        term: ''
+        showModal: false,
+        searchTerm: 'foobar'
       };
     },
 
     beforeMount() {
+      this.$vuss.h.sync('showModal');
+      this.$vuss.q.sync('searchTerm');
+
       /**
-       * the first argument is the local state key
-       * the second argument is the hash key
+       * Resulting URL
+       * ?search_term=foobar#show-modal
        */
-      this.$hasher.sync('term', 'term');
     }
   };
 </script>
 ```
 
-#### Vuex
+### Vuex mapState
 
 ```javascript
 import { mapState } = 'vuex';
@@ -76,49 +119,167 @@ export default {
   },
 
   beforeMount() {
-    this.$hasher.sync('showModal', 'showAddUserModal', (newVal) => {
+    // define a callback for when the hash changes
+    this.$vuss.h.sync('showModal', 'showAddUserModal', (newVal) => {
       this.$store.commit('users/setShowModal', newVal);
     });
   }
 };
 ```
 
-## Hash Encoding and Decoding
+### Vuex computed with setter
 
-- When a hash is set via a VueHasher mixin method, it is first encoded using the [qs](https://www.npmjs.com/package/qs) library's `stringify` method.
-- When a hash is privided by the global `$hash` computed property, it is decoded using the [qs](https://www.npmjs.com/package/qs) library's `parse` method.
-  - String values `true` and `false` are coicerced to booleans.
+```javascript
+export default {
+  name: 'Users',
 
-![](assets/url-term.png)
+  computed: {
+    showModal: {
+      get() {
+        return this.$store.state.users.showModal;
+      },
 
-![](assets/computed-term.png)
+      set(newVal) {
+        this.$store.commit('users/setShowModal', newVal);
+      }
+    }
+  },
 
-![](assets/url-filters.png)
+  beforeMount() {
+    this.$vuss.h.sync('showModal', 'showAddUserModal');
+  }
+};
+```
 
-![](assets/computed-filters.png)
+### Nested State
 
-## Global Mixin
+```javascript
+export default {
+  name: 'Users',
 
-A global mixin is installed by this plugin.
+  data() {
+    return {
+      list: {
+        filters: {
+          animal: 'dog',
+          color: 'red',
+          gender: 'male'
+        }
+      }
+    };
+  },
+
+  beforeMount() {
+    this.$vuss.q.sync('list.filters');
+    /**
+     * Resulting URL
+     * ?list_filters=%7B"animal"%3A"dog","color"%3A"red","gender"%3A"male"%7D
+     */
+
+    this.$vuss.q.sync('list.filters', 'filters');
+    /**
+     * Resulting URL
+     * ?filters=%7B"animal"%3A"dog","color"%3A"red","gender"%3A"male"%7D
+     */
+  }
+};
+```
+
+## Hashes vs Queries
+
+### Hashes
+
+Hashes is intended to be used for simple boolean state, such as whether or not to show a modal. It is always converted to `kebab-case`.
+
+```javascript
+export default {
+  // data
+  data() {
+    return {
+      modal: true
+    };
+  },
+
+  // sync
+  beforeMount() {
+    // you can define both the state key and the hash value if you wish
+    this.$vuss.h.sync('modal', 'showModal');
+
+    // optional - define a callback for when the hash changes
+    this.$vuss.h.sync('modal', 'showModal', newVal => {
+      this.modal = newVal;
+    });
+  }
+};
+
+// result
+('https://mysite.com#show-modal');
+```
+
+### Queries
+
+Queries is intended for data such as search terms, filters, current tab, etc. It is stringified on write, and parsed on read. Keys are always converted to `snake_case`.
+
+```javascript
+export default {
+  // data
+  data() {
+    return {
+      filters: {
+        animal: 'dog',
+        color: 'red',
+        gender: 'male'
+      }
+    };
+  },
+
+  // sync
+  beforeMount() {
+    // you can define both the state key and the query key if you wish
+    this.$vuss.q.sync('filters', 'f');
+
+    // optional - define a callback for when the query changes
+    this.$vuss.h.sync('filters', 'f', newVal => {
+      this.filters = { ...newVal };
+    });
+  }
+};
+
+// result
+('https://mysite.com?f=%7B"animal"%3A"dog","color"%3A"red","gender"%3A"male"%7D');
+```
+
+## Global Mixins
+
+Two global mixins are installed by this plugin - one for syncing hash and one for syncing query queries.
 
 ### Computed
 
 #### `vm.$hash`
 
-Provides hash information
+Provides hash
+
+- Returns `{string}`
+
+```
+vm.$hash = 'show-modal'
+```
+
+#### `vm.$query`
+
+Provides query
 
 - Returns `{object}`
 
 ```
 {
-  parsed: { term: 'foobar' },
-  raw: '#term=foobar'
+  term: 'foobar'
 }
 ```
 
 ### Methods
 
-#### `vm.$hasher.clear()`
+#### `vm.$vuss.h.clear()`
 
 Clears hash
 
@@ -126,9 +287,45 @@ Clears hash
 
 ---
 
-#### `vm.$hasher.exists(key)`
+#### `vm.$vuss.h.set(hash, replaceHistory)`
 
-Provides if hash key exists
+Sets hash
+
+- Arguments
+  - `{string} hash`
+  - `{boolean} [replaceHistory=false]` -- if true, a new history entry will not be added to the navigation stack
+- Returns `{void}`
+
+---
+
+#### `vm.$vuss.h.sync(state, hash, onHashChange)`
+
+Syncs the hash with specific component state.
+
+When first called, it will sync the current hash to the state OR state to hash, in that order. It then sets up two watchers -- one for hash changes and one for state changes.
+
+- Arguments
+  - `{string} state`
+  - `{string} [hash]` -- if not passed, is set to the value of `state`
+  - `{function} [onHashChange]`
+    - Called when Vue Router hash change detected
+    - Arguments
+      - `{*} newVal`
+- Returns `{void}`
+
+---
+
+#### `vm.$vuss.q.clear()`
+
+Clears query
+
+- Returns `{void}`
+
+---
+
+#### `vm.$vuss.q.exists(key)`
+
+Provides if query key exists
 
 - Arguments
   - `{string} key`
@@ -136,53 +333,53 @@ Provides if hash key exists
 
 ---
 
-#### `vm.$hasher.remove(key)`
+#### `vm.$vuss.q.push(hash)`
 
-Removes hash value by key
+Updates query query object.
 
 - Arguments
-  - `{object} hash`
+  - `{object} query`
+  - `{function} [next=() => {}]`
+  - `{boolean} [replaceHistory=false]` -- if true, a new history entry will not be added to the navigation stack
 - Returns `{void}`
 
 ---
 
-#### `vm.$hasher.replace(hash)`
+#### `vm.$vuss.q.remove(key)`
 
-Replaces hash with new value
+Removes query value by key
 
 - Arguments
-  - `{object} hash`
+  - `{object} query`
 - Returns `{void}`
 
 ---
 
-#### `vm.$hasher.set(key, value)`
+#### `vm.$vuss.q.set(key, value, replaceHistory)`
 
-Sets hash value by key
+Sets query value by key
 
 - Arguments
   - `{string} key`
-  - `{mixed} value`
+  - `{*} value`
+  - `{boolean} [replaceHistory=false]` -- if true, a new history entry will not be added to the navigation stack
 - Returns `{void}`
 
 ---
 
-#### `vm.$hasher.sync(key, watch, hashParsedWatchCallback)`
+#### `vm.$vuss.q.sync(state, key, onQueryChange)`
 
-Syncs a hash key with specific component state.
+Syncs a query key with specific component state.
 
-When first called, it will sync the current hash to the state. It then sets up two watchers -- one for hash changes and one for state changes.
-
-Watchers are destroyed when the component is destroyed.
+When first called, it will sync the current query to the state OR state to query, in that order. It then sets up two watchers -- one for query changes and one for state changes.
 
 - Arguments
-  - `{string} key`
-  - `{string} value`
-  - `{function} hashParsedWatchCallback` optional
-    - Called when Vue Router hash change detected
-    - Invoked immediatey
+  - `{string} state`
+  - `{string} [key]` -- if not passed, is set to the value of `state`
+  - `{function} [onQueryChange]`
+    - Called when Vue Router query change detected
     - Arguments
-      - `{mixed} newVal`
+      - `{*} newVal`
 - Returns `{void}`
 
 ## Scripts

@@ -1,55 +1,60 @@
 <template>
   <div class="flex flex-col items-center mt-32">
+    <div class="flex flex-col mb-10">
+      <button class="bg-indigo-800 px-4 py-2 rounded text-white" @click="showModal = true">
+        Show Modal
+      </button>
+    </div>
     <div class="flex flex-col mb-10" style="width: 40rem;">
       <div class="flex border-b-2 border-gray-400">
         <div
           class="flex-1 text-center cursor-pointer py-2 hover:bg-gray-200 rounded-t"
-          :class="{ 'bg-gray-400 hover:bg-gray-400': tab === 'Tab 1' }"
-          @click="tab = 'Tab 1'"
+          :class="{ 'bg-gray-400 hover:bg-gray-400': nested.tab === 'Tab 1' }"
+          @click="nested.tab = 'Tab 1'"
         >
           Tab 1
         </div>
         <div
           class="flex-1 text-center cursor-pointer py-2 hover:bg-gray-200 rounded-t"
-          :class="{ 'bg-gray-400 hover:bg-gray-400': tab === 'Tab 2' }"
-          @click="tab = 'Tab 2'"
+          :class="{ 'bg-gray-400 hover:bg-gray-400': nested.tab === 'Tab 2' }"
+          @click="nested.tab = 'Tab 2'"
         >
           Tab 2
         </div>
         <div
           class="flex-1 text-center cursor-pointer py-2 hover:bg-gray-200 rounded-t"
-          :class="{ 'bg-gray-400 hover:bg-gray-400': tab === 'Tab 3' }"
-          @click="tab = 'Tab 3'"
+          :class="{ 'bg-gray-400 hover:bg-gray-400': nested.tab === 'Tab 3' }"
+          @click="nested.tab = 'Tab 3'"
         >
           Tab 3
         </div>
         <div
           class="flex-1 text-center cursor-pointer py-2 hover:bg-gray-200 rounded-t"
-          :class="{ 'bg-gray-400 hover:bg-gray-400': tab === 'Tab 4' }"
-          @click="tab = 'Tab 4'"
+          :class="{ 'bg-gray-400 hover:bg-gray-400': nested.tab === 'Tab 4' }"
+          @click="nested.tab = 'Tab 4'"
         >
           Tab 4
         </div>
       </div>
-      <div v-if="tab === 'Tab 1'" class="p-4">
+      <div v-if="nested.tab === 'Tab 1'" class="p-4">
         Leverage agile frameworks to provide a robust synopsis for high level overviews. Iterative
         approaches to corporate strategy foster collaborative thinking to further the overall value
         proposition. Organically grow the holistic world view of disruptive innovation via workplace
         diversity and empowerment.
       </div>
-      <div v-if="tab === 'Tab 2'" class="p-4">
+      <div v-if="nested.tab === 'Tab 2'" class="p-4">
         Bring to the table win-win survival strategies to ensure proactive domination. At the end of
         the day, going forward, a new normal that has evolved from generation X is on the runway
         heading towards a streamlined cloud solution. User generated content in real-time will have
         multiple touchpoints for offshoring.
       </div>
-      <div v-if="tab === 'Tab 3'" class="p-4">
+      <div v-if="nested.tab === 'Tab 3'" class="p-4">
         Capitalize on low hanging fruit to identify a ballpark value added activity to beta test.
         Override the digital divide with additional clickthroughs from DevOps. Nanotechnology
         immersion along the information highway will close the loop on focusing solely on the bottom
         line.
       </div>
-      <div v-if="tab === 'Tab 4'" class="p-4">
+      <div v-if="nested.tab === 'Tab 4'" class="p-4">
         Podcasting operational change management inside of workflows to establish a framework.
         Taking seamless key performance indicators offline to maximise the long tail. Keeping your
         eye on the ball while performing a deep dive on the start-up mentality to derive convergence
@@ -125,7 +130,15 @@
     </div>
     <div class="w-2/3">
       <pre class="whitespace-pre">
-        <code class="block border-2 border-gray-800 rounded p-2 text-sm font-mono bg-gray-700 text-white">{{ this.$hash | pretty }}</code>
+        <code class="block border-2 border-gray-800 rounded p-2 text-sm font-mono bg-gray-700 text-white">// vm.$query
+{{ $query | pretty }}
+
+// vm.$hash
+{{ $hash | pretty }}
+
+// vm.$data
+{{ $data | pretty }}
+        </code>
       </pre>
     </div>
     <div class="w-2/3">
@@ -164,6 +177,23 @@
         </tbody>
       </table>
     </div>
+    <div
+      v-if="showModal"
+      class="fixed w-full h-full flex top-0 left-0 items-center justify-center"
+      style="background: rgba(0,0,0,.5)"
+    >
+      <div
+        class="flex-none bg-white shadow-lg rounded flex flex-col"
+        style="height: 500px; width: 500px;"
+      >
+        <div class="p-8 bg-red-500 text-white font-bold text-2xl flex-none">Modal</div>
+        <div class="flex-1 flex items-center justify-center">
+          <button class="bg-indigo-800 px-4 py-2 rounded text-white" @click="showModal = false">
+            Close Modal
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -186,15 +216,17 @@ export default {
         color: '',
         gender: ''
       },
-      tab: 'Tab 1',
-      term: '',
-      users
+      nested: {
+        tab: 'Tab 1'
+      },
+      showModal: false,
+      term: ''
     };
   },
 
   computed: {
     filteredUsers() {
-      return this.users.filter(({ name, favoriteAnimal, favoriteColor, gender }) => {
+      return users.filter(({ name, favoriteAnimal, favoriteColor, gender }) => {
         return (
           (this.term ? name.toLowerCase().indexOf(this.term.toLowerCase()) > -1 : true) &&
           (this.filters.animal ? this.filters.animal === favoriteAnimal : true) &&
@@ -206,11 +238,10 @@ export default {
   },
 
   beforeMount() {
-    this.$hasher.sync('tab', 'tab');
-    this.$hasher.sync('term', 'term');
-    this.$hasher.sync('filters', 'filters', (filters = { animal: '', color: '', gender: '' }) => {
-      this.$set(this, 'filters', { ...filters });
-    });
+    this.$vuss.h.sync('showModal');
+    this.$vuss.q.sync('nested.tab');
+    this.$vuss.q.sync('term');
+    this.$vuss.q.sync('filters');
   },
 
   methods: {

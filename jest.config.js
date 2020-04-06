@@ -8,6 +8,7 @@ module.exports = {
     // tell Jest to handle `*.vue` files
     'vue'
   ],
+  setupFiles: ['<rootDir>/test/jest.setup.js'],
   transform: {
     // process `*.vue` files with `vue-jest`
     '.*\\.(vue)$': 'vue-jest',
