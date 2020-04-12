@@ -39,9 +39,11 @@ export default {
         set(hash, true);
       }
 
-      this.$watch('$hash', newVal => onHashChange(newVal === hash));
-      this.$watch(state, stateWatcherCallback);
+      this.$vussUnwatchers.push(this.$watch('$hash', newVal => onHashChange(newVal === hash)));
+      this.$vussUnwatchers.push(this.$watch(state, stateWatcherCallback));
     };
+
+    this.$vussUnwatchers = [];
 
     this.$vuss = {
       h: {
@@ -50,6 +52,10 @@ export default {
         sync
       }
     };
+  },
+
+  beforeDestroy() {
+    this.$vussUnwatchers.forEach(unwatcher => unwatcher());
   },
 
   computed: {

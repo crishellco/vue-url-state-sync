@@ -1,6 +1,6 @@
 {
   "name": "vue-url-state-sync",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Chris Mitchell (@crishellco)",
   "description": "A Vue plugin to sync router queries and hash with state.",
   "main": "dist/index.js",

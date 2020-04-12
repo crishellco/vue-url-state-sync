@@ -66,9 +66,11 @@ export default {
       // initialize
       exists(key) ? onQueryChange(this.$query[key]) : stateWatcherCallback(get(this, state), true);
 
-      this.$watch(`$query.${key}`, queryWatcherCallback);
-      this.$watch(state, stateWatcherCallback);
+      this.$vussUnwatchers.push(this.$watch(`$query.${key}`, queryWatcherCallback));
+      this.$vussUnwatchers.push(this.$watch(state, stateWatcherCallback));
     };
+
+    this.$vussUnwatchers = [];
 
     this.$vuss.q = {
       clear,
@@ -78,6 +80,10 @@ export default {
       set,
       sync
     };
+  },
+
+  beforeDestroy() {
+    this.$vussUnwatchers.forEach(unwatcher => unwatcher());
   },
 
   computed: {
